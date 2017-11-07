@@ -4,11 +4,17 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
 var index = require('./routes/index');
 var users = require('./routes/users');
-
+var mysql = require('mysql');
 var app = express();
+var con = mysql.createConnection({
+    host: "localhost:3306",
+    user: "admin",
+    password: "admin",
+    database: "mydb",
+});
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,6 +47,15 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+
+con.connect(function(err) {
+    if (err) throw err;
+    con.query("SELECT *", function (err, result, fields) {
+        if (err) throw err;
+        console.log(result);
+    });
 });
 
 module.exports = app;
