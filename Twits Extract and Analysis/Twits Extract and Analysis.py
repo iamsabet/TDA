@@ -1,13 +1,18 @@
-from flask import Flask,jsonify
+from flask import Flask
+from flask import jsonify
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import re
 import remove_emoji
-import MySQLdb
-db=MySQLdb.connect(user="root",passwd="",db="SOCCER",unix_socket="/opt/lampp/var/mysql/mysql.sock")
+from flask_sqlalchemy import SQLAlchemy
 app = Flask(__name__)
 
 
+userpass = 'mysql+pymysql://root:@'
+basedir  = '192.168.43.138'
+dbname   = '/soccer'
+socket   = '?unix_socket=/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock'
+db = SQLAlchemy(app)
 
 @app.route('/')
 def hello_world():
@@ -16,7 +21,8 @@ def hello_world():
 
 @app.route('/cleaner')
 def cleaner():
-    if db.session.query('1').from_statement('SELECT *').all():
+    if db.session.query('1').from_statement('1').all():
+        print(db.session.query('*').from_statement('eventText').all())
         return 'It works.'
     else:
         return 'Something is broken.'
@@ -25,7 +31,7 @@ def cleaner():
     # list of strings we play here ... :
     # mockedData ...
     print('Remove Stop Words , Emojies , Emoticons , Urls ... and tokenize')
-    twitText = "Whadddddupppp United fans. Do you remember http://web.ali.com that time when you lost 4-0 at the Bridge and you came back a year later and were lucky enough to only lose 1-0? 😂😂😂😂😂 "
+    twitText = "Whadddddupppp United fans. Do you remember http://web.ali.com that time when you lost 4-0 at the Bridge and you came back a year later and were lucky enough to only lose 1-0? "
     print(twitText)  # with     emojies
     removedEmojiesText = remove_emoji.remove_emoji(twitText)
     word_tokens = word_tokenize(removedEmojiesText)
