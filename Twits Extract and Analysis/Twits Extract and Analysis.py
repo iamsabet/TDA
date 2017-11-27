@@ -6,7 +6,9 @@ import re
 from pymongo import MongoClient
 import string
 import remove_emoji
-from random import *
+import gzip
+import email.utils
+import datetime
 import datetime
 from nltk.stem.wordnet import WordNetLemmatizer
 lmtzr = WordNetLemmatizer()
@@ -28,15 +30,16 @@ def hello_world():
 @app.route('/extractor')
 def extractor():
      z = 0
-     db = pymysql.connect(host='localhost', port=3306, user='root',password='147852' ,db='twitsDb')
-     query = ("select twitId,twitText,twitDate FROM twitsDatas where twitId < 100000")
-     cur = db.cursor(pymysql.cursors.DictCursor)
-     cur.execute(query);
-     if cur:
-         for row in cur:
-            print(z)
+     f = gzip.open('/home/sabet/Desktop/twitsDb/Euro2016_Tweets.txt.gz', 'r')
+     for line in f:
+         try:
+            line_in = line.decode().split(';')  # Split string to list on semicolon
+            line_in = [x.rstrip() for x in line_in]  # strip whitespace from the right of each element
+            parts = email.utils.parsedate_tz(line_in[0])
+            dt = datetime.datetime(*parts[:6]) - datetime.timedelta(seconds=parts[-1])
+
             z = z + 1
-            twitText = row['twitText'].lower()
+            twitText = line_in[1].lower()
             removedEmojiesText = remove_emoji.remove_emoji(twitText)
             word_tokens = word_tokenize(removedEmojiesText)
             hashtagsList = []
@@ -59,18 +62,12 @@ def extractor():
                         if(removedUrlText != ''):
                             if(not filtered_sentence.__contains__(removedUrlText)):
                                 filtered_sentence.append(removedUrlText)
-            print('filtered Scentence : ')
-            print(filtered_sentence)
-            print('hashtagsList : ')
-            print(hashtagsList)
-            min_char = 10
-            max_char = 16
-            allchar = string.ascii_letters + string.punctuation + string.digits
-            password = "".join(choice(allchar) for x in range(randint(min_char, max_char)))
+            if(z % 1000 == 0):
+                print(z)
             data = {
-                'twitId': password,
-                'twitText': row['twitText'],
-                'twitDate': ((row['twitDate'] - epoch).total_seconds() * 1), # /seconds -- >  *1000 = ms
+                'twitId': z,
+                'twitText': twitText,
+                'twitDate': ((str(dt) - epoch).total_seconds() * 1), # /seconds -- >  *1000 = ms
                 'twitHashtags': hashtagsList ,
                 'twitTokens': filtered_sentence,
                 'tokensFeeling': [],
@@ -81,6 +78,8 @@ def extractor():
             twits = db.twits
             result = twits.insert_one(data)
             print('One post -'.format(result.inserted_id))
+         except :
+             print("failed")
 
      return jsonify(z)
 
