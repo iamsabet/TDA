@@ -1,4 +1,3 @@
-import email.utils
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import re
@@ -10,7 +9,6 @@ import datetime
 from nltk.stem.wordnet import WordNetLemmatizer
 lmtzr = WordNetLemmatizer()
 epoch = datetime.datetime.utcfromtimestamp(0)
-client = MongoClient()
 
 client = MongoClient('mongodb://localhost:27017')
 db = client.twitsDb
@@ -30,16 +28,16 @@ for line in f:
         word_tokens = word_tokenize(removedEmojiesText)
         hashtagsList = []
         lemetizedList = []
-        if (z % 1000 == 0):
+        if z % 1000 == 0:
             print(z)
             print(line_in)
-        i = 0 ;
+        i = 0
         for x in word_tokens :
-            if(not lemetizedList.__contains__(x)):
+            if not lemetizedList.__contains__(x):
                 lemetizedList.append(lmtzr.lemmatize(x))
-            if(x == '#'):
-                if(i+1 != len(word_tokens)):
-                    if(not hashtagsList.__contains__(word_tokens[i+1])):
+            if x == '#':
+                if i+1 != len(word_tokens):
+                    if not hashtagsList.__contains__(word_tokens[i+1]):
                         hashtagsList.append(word_tokens[i+1])
             i = i + 1
         stop_words = set(stopwords.words('english'))
@@ -47,15 +45,15 @@ for line in f:
         for w in lemetizedList:
             if w not in stop_words:
                 if len(w) > 1 and not w.startswith('/'):
-                    removedUrlText = re.sub(r'http.*$', "", w);
-                    if(removedUrlText != ''):
-                        if(not filtered_sentence.__contains__(removedUrlText)):
+                    removedUrlText = re.sub(r'http.*$', "", w)
+                    if removedUrlText != '':
+                        if not filtered_sentence.__contains__(removedUrlText):
                             filtered_sentence.append(removedUrlText)
 
         data = {
             'twitId': z,
             'twitText': twitText,
-            'twitDate': str(dt), # /seconds -- >  *1000 = ms
+            'twitDate': ((dt - epoch).total_seconds() * 1), # /seconds -- >  *1000 = ms
             'twitHashtags': hashtagsList ,
             'twitTokens': filtered_sentence,
             'tokensFeeling': [],
@@ -63,7 +61,7 @@ for line in f:
             'positiveFeelings': 0,
         }
         result = twits.insert_one(data)
-        if(z % 1000):
+        if z % 1000:
             print(z)
             print(' twits inserted')
     except:

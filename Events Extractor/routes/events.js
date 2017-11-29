@@ -1,19 +1,23 @@
 var express = require('express');
 var router = express.Router();
 var cors = require('cors');
+var randomstring = require("randomstring");
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://localhost:27017/eventsDb";
+var url = "mongodb://localhost:27017/twitsDb";
 MongoClient.connect(url, function(err, db) {
-
+    console.log("connected to db");
 });
 
 router.use(cors({origin: 'http://www.uefa.com'}));
 router.get("/",cors(), function (req, res) {
         res.send('hellow');
 });
-router.post("/sendData",cors(), function (req, res) {
+router.post("/sendEvents",cors(), function (req, res) {
+        var matchId = randomstring.generate({
+            length: 10,
+            charset: 'alphabetic'
+        });
         if (err) throw err;
-        console.log('kirekhar');
         console.log(req.body['eventsList']);
         var eventsList = req.body.eventsList;
         for (x in eventsList) {
@@ -21,6 +25,11 @@ router.post("/sendData",cors(), function (req, res) {
             var comment = eventsList[x].eventComment;
             var splitedComment = comment.split(')');
 
+            event.id = randomstring.generate({
+                length: 10,
+                charset: 'alphabetic'
+            });
+            event.matchId = matchId;
             event.eventName = splitedComment[1] || null;
             event.subject = splitedComment[0] + ')' || null;
             event.eventKey = splitedComment[1] || null;
@@ -67,28 +76,37 @@ router.post("/sendData",cors(), function (req, res) {
                     event.subject = 'referee';
                 }
             }
+            event.matchTeams = "";
+            event.matchTime  = 0;
             event.relativeTime = eventsList[x].relativeTime;
             console.log(JSON.stringify(event) + '\n');
             MongoClient.connect(url, function (err, db) {
                 if (err) throw err;
-                db.collection("customers").insertOne(event, function (err, res) {
+                db.collection("events").insertOne(event, function (err, res) {
                     if (err) throw err;
-                    console.log("1 document inserted");
+                    console.log("1 event inserted");
                     db.close();
                 });
             });
+            if(x === listOfEvents.length - 1){
+                res.send(matchId);
+            }
         }
-        res.send(true);
+
 });
 
-
-router.get("/test",function (req, res) {
-    con.connect(function (err) {
-        if(err) throw err;
-        con.query("SELECT * FROM englandWalesEvents WHERE relativeTime = '60'", function (err, result, fields) {
+router.post("/sendInfo",cors(), function (req, res) {
+    var matchTime = req.body['matchTime'];
+    var matchId = req.body['matchId'];
+    var matchTeams = req.body['matchTeams'];
+    MongoClient.connect(url, function (err, db) {
+        if (err) throw err;
+        db.collection("events").updateMany({matchId:matchId},{matchTeams:matchTeams,matchTime:matchTime},function (err, res) {
             if (err) throw err;
-            console.log(result);
+            db.close();
+            res.send(true);
         });
     });
 });
+
 module.exports = router;
