@@ -1,22 +1,35 @@
 var listOfEvents = [] ;
 var elements = [];
 
-function eventsExtractor(){
+function eventsExtractor(matchId){
 	var eachEvent = {};
-    var matchTime = document.querySelector('#VenueDetails').innerText.split(' - ')[2] + document.querySelector('#VenueDetails').innerText.split(' - ')[3].split(" (")[0];
-    var matchTeams  = document.querySelector('#teamHomeName').innerHTML.split(">")[1].split(" <")[0] + ":" + document.querySelector("#teamAwayName").innerHTML.split(">")[1].split(" <")[0];
+    var matchTime = document.querySelector('#VenueDetails').innerText.split(' - ')[2] + " - " +  document.querySelector('#VenueDetails').innerText.split(' - ')[3].split(" (")[0];
+    console.log(matchTime);
+    var matchTeams  = document.querySelector('#teamHomeName').innerHTML.split(">")[1].split(" <")[0] + "-" + document.querySelector("#teamAwayName").innerHTML.split(">")[1].split(" <")[0];
     elements = document.querySelectorAll('#commentary li');
 	var num ;
 	for(num = 1 ; num < elements.length ; num++){
-		eachEvent = { relativeTime : elements[num].innerHTML.split('time">')[1].split(' </div')[0],
-		eventComment : elements[num].innerHTML.split('comment">')[1].split('<br>')[0]};
-		listOfEvents.push(eachEvent);
+        var eventTime = elements[num].innerHTML.split('time">')[1].split(' </div')[0];
+
+        if(eventTime.split("+").length > 1){
+            eventTime = parseInt(eventTime.split("+")[0]) + parseInt(eventTime.split("+")[1]);
+        }//
+		else{
+            eventTime = parseInt(eventTime)
+		}
+        if(eventTime > 45) {
+            eventTime = eventTime+15+1
+        }
+
+        eachEvent = { relativeTime : eventTime,
+            eventComment : elements[num].innerHTML.split('comment">')[1].split('<br>')[0]};
+        listOfEvents.push(eachEvent);
 	}
-	sendEvents(listOfEvents,matchTime,matchTeams);
+	sendEvents(listOfEvents,matchId,matchTime,matchTeams);
 
 }
 
-function sendEvents(eventsList,matchTime,matchTeams){
+function sendEvents(eventsList,matchId,matchTime,matchTeams){
 	var xhr = new XMLHttpRequest();
 	var url = "http://localhost:3000/events/sendEvents";
 	xhr.open("POST", url, true);
@@ -30,6 +43,7 @@ function sendEvents(eventsList,matchTime,matchTeams){
 	        }
 	    }
 	};
+	console.log(matchTime);
 	xhr.send(JSON.stringify({eventsList:eventsList,matchId:matchId,matchTime:matchTime,matchTeams:matchTeams}));
 }
 

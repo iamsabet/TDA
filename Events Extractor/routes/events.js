@@ -4,6 +4,7 @@ var cors = require('cors');
 var randomstring = require("randomstring");
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/twitsDb";
+
 MongoClient.connect(url, function(err, db) {
     console.log("connected to db");
 });
@@ -21,21 +22,22 @@ router.get("/",cors(), function (req, res) {
 });
 router.post("/sendEvents",cors(), function (req, res) {
 
-        var matchId = randomstring.generate({
-            length: 10,
-            charset: 'alphabetic'
-        });
     MongoClient.connect(url, function (err, db) {
         var eventsList = req.body["eventsList"];
-        var matchId = req.body["matchId"];
         var matchTeams = req.body["matchTeams"];
-        var matchTime = req.body["matchTime"];
-        console.log(matchId , matchTime ,matchTeams);
+        var matchDate  = req.body["matchTime"];
+        var matchTime = req.body["matchTime"].split(" - ")[0].toString();
+        var matchId = req.body["matchId"];
+        console.log(matchTime);
+        var dateStrings = matchTime.split("/");
+        var newTime = dateStrings[2] + "-"+ dateStrings[1] + "-"+dateStrings[0];
+        var date = new Date(Date.parse(newTime+"T01:01+05:00"));
+        var eventSecondsTime = date.getTime()/1000;
+        console.log();
         for (var x = 0 ; x < eventsList.length ; x++) {
             var event = {};
             var comment = eventsList[x].eventComment;
             var splitedComment = comment.split(')');
-            event.id = 1;
             event.matchId = matchId;
             event.eventName = splitedComment[1] || null;
             event.subject = splitedComment[0] + ')' || null;
@@ -83,15 +85,17 @@ router.post("/sendEvents",cors(), function (req, res) {
                     event.subject = 'referee';
                 }
             }
+            console.log(eventsList[x].relativeTime);
             event.matchTeams = matchTeams;
-            event.matchTime  = matchTime;
+            event.matchTime  =  matchDate; // France GMT+1;
             event.relativeTime = eventsList[x].relativeTime;
-            console.log(JSON.stringify(event) + '\n');
+            event.eventTime = ((eventsList[x].relativeTime*60) + eventSecondsTime); //
+                console.log(JSON.stringify(event) + '\n');
 
                 if (err) throw err;
                 db.collection("events").insertOne(event, function (err, res) {
                     if (err) throw err;
-                    console.log("1 event inserted");
+
             });
             if(x === eventsList.length - 1){
                 res.send({matchId:matchId,length:eventsList.length});
