@@ -7,28 +7,35 @@ var url = "mongodb://localhost:27017/twitsDb";
 MongoClient.connect(url, function(err, db) {
     console.log("connected to db");
 });
-
+router.all('/', function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "http://www.uefa.com");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header("Access-Control-Allow-Methods", "POST GET");
+    res.header("X-Frame-Options", "ALLOWALL");
+    res.header("Access-Control-Allow-Credentials", "true");
+    next();
+});
 router.use(cors({origin: 'http://www.uefa.com'}));
 router.get("/",cors(), function (req, res) {
         res.send('hellow');
 });
 router.post("/sendEvents",cors(), function (req, res) {
+
         var matchId = randomstring.generate({
             length: 10,
             charset: 'alphabetic'
         });
-        if (err) throw err;
-        console.log(req.body['eventsList']);
-        var eventsList = req.body.eventsList;
-        for (x in eventsList) {
+    MongoClient.connect(url, function (err, db) {
+        var eventsList = req.body["eventsList"];
+        var matchId = req.body["matchId"];
+        var matchTeams = req.body["matchTeams"];
+        var matchTime = req.body["matchTime"];
+        console.log(matchId , matchTime ,matchTeams);
+        for (var x = 0 ; x < eventsList.length ; x++) {
             var event = {};
             var comment = eventsList[x].eventComment;
             var splitedComment = comment.split(')');
-
-            event.id = randomstring.generate({
-                length: 10,
-                charset: 'alphabetic'
-            });
+            event.id = 1;
             event.matchId = matchId;
             event.eventName = splitedComment[1] || null;
             event.subject = splitedComment[0] + ')' || null;
@@ -76,37 +83,22 @@ router.post("/sendEvents",cors(), function (req, res) {
                     event.subject = 'referee';
                 }
             }
-            event.matchTeams = "";
-            event.matchTime  = 0;
+            event.matchTeams = matchTeams;
+            event.matchTime  = matchTime;
             event.relativeTime = eventsList[x].relativeTime;
             console.log(JSON.stringify(event) + '\n');
-            MongoClient.connect(url, function (err, db) {
+
                 if (err) throw err;
                 db.collection("events").insertOne(event, function (err, res) {
                     if (err) throw err;
                     console.log("1 event inserted");
-                    db.close();
-                });
             });
-            if(x === listOfEvents.length - 1){
-                res.send(matchId);
+            if(x === eventsList.length - 1){
+                res.send({matchId:matchId,length:eventsList.length});
             }
         }
-
-});
-
-router.post("/sendInfo",cors(), function (req, res) {
-    var matchTime = req.body['matchTime'];
-    var matchId = req.body['matchId'];
-    var matchTeams = req.body['matchTeams'];
-    MongoClient.connect(url, function (err, db) {
-        if (err) throw err;
-        db.collection("events").updateMany({matchId:matchId},{matchTeams:matchTeams,matchTime:matchTime},function (err, res) {
-            if (err) throw err;
-            db.close();
-            res.send(true);
-        });
     });
 });
+
 
 module.exports = router;
