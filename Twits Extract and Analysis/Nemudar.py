@@ -14,9 +14,7 @@ twits = db.twits
 events = db.events
 
 tweets = twits.find(
-    {"twitHashtags": {"$in": ["1-0", "portugal", "cr7", "cristianoronaldo", "ronaldo", "pepe", "por", "france", "fra",
-                              "euro2016", "final", "amp", "supporting", "euro", "support"]},
-     "twitmiliSeconds": {"$gt": 1468108920000, "$lt": 1468118160000}}) # 5 mins after the game
+    {"twitmiliSeconds": {"$gt": 1468108920000, "$lt": 1468118160000}}) # 5 mins after the game
 
 
 # 1min = 60000ms
@@ -39,13 +37,12 @@ for tweet in tweets:
 
 lastPlace = 0
 eventTimeLine = []
-
-for x in range (0,minutes):
+y = 0
+for x in range(0,minutes):
+    print("minutes:", x)
     eventList = events.find({"relativeTime": x})
     for event in eventList:
         if event["relativeTime"]:
             eventTimeLine.append({"eventTime": x, "name": event["eventName"],"subject": event["subject"]})
-
-print(twitNumbers)
-print(eventTimeLine)
-# Predict
+            print({"eventTime": x, "name": event["eventName"],"subject": event["subject"]})
+    print("twits", twitNumbers[x])
