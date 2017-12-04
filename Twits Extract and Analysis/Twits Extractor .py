@@ -14,6 +14,7 @@ client = MongoClient('mongodb://localhost:27017')
 db = client.twitsDb
 twits = db.twits
 z = 0
+failed = 0
 f = gzip.open('/home/sabet/Desktop/twitsDb/Euro2016_Tweets.txt.gz', 'r')
 for line in f:
     try:
@@ -53,17 +54,19 @@ for line in f:
         data = {
             'twitId': z,
             'twitText': twitText,
-            'twitDate': ((dt - epoch).total_seconds() * 1), # /seconds -- >  *1000 = ms
-            'twitHashtags': hashtagsList ,
+            'twitDate': dt,  # seconds -- >  *1000 = ms
+            'twitmiliSeconds': ((dt - epoch).total_seconds() * 1000),
+            'twitHashtags': hashtagsList,
             'twitTokens': filtered_sentence,
             'tokensFeeling': [],
             'NegativeFeelings': 0,
             'positiveFeelings': 0,
         }
         result = twits.insert_one(data)
-        if z % 1000:
-            print(z)
-            print(' twits inserted')
+        print(z)
+        print(' twits inserted')
     except:
-        print("failed")
+        failed = failed + 1
+        print(failed)
+        print("  - failed")
 

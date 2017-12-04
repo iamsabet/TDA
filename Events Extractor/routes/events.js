@@ -28,12 +28,13 @@ router.post("/sendEvents",cors(), function (req, res) {
         var matchDate  = req.body["matchTime"];
         var matchTime = req.body["matchTime"].split(" - ")[0].toString();
         var matchId = req.body["matchId"];
-        console.log(matchTime);
-        var dateStrings = matchTime.split("/");
-        var newTime = dateStrings[2] + "-"+ dateStrings[1] + "-"+dateStrings[0];
-        var date = new Date(Date.parse(newTime+"T01:01+05:00"));
-        var eventSecondsTime = date.getTime()/1000;
-        console.log();
+        // console.log(matchTime);
+        // var dateStrings = matchTime.split("/");
+        // var newTime = dateStrings[2] + "-"+ dateStrings[1] + "-"+dateStrings[0];
+        // var date = Date.parse(newTime+"T01:02+01:00"));
+        // console.log(date);
+        var eventmiliSecondsTime = Date.parse("2016-07-10T01:02+01:00");
+        console.log(eventmiliSecondsTime);
         for (var x = 0 ; x < eventsList.length ; x++) {
             var event = {};
             var comment = eventsList[x].eventComment;
@@ -89,7 +90,7 @@ router.post("/sendEvents",cors(), function (req, res) {
             event.matchTeams = matchTeams;
             event.matchTime  =  matchDate; // France GMT+1;
             event.relativeTime = eventsList[x].relativeTime;
-            event.eventTime = ((eventsList[x].relativeTime*60) + eventSecondsTime); //
+            event.eventTime = ((eventsList[x].relativeTime*60000) + eventmiliSecondsTime); //
                 console.log(JSON.stringify(event) + '\n');
 
                 if (err) throw err;
@@ -103,6 +104,5 @@ router.post("/sendEvents",cors(), function (req, res) {
         }
     });
 });
-
 
 module.exports = router;
