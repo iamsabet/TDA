@@ -1,0 +1,29 @@
+<head>
+  <!-- Plotly.js -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+
+<body>
+
+  <div id="myDiv"></div>
+  <script>
+    $(document).ready(function(){
+        $.ajax({
+            url:"http://localhost:3000/events/plot",
+            method:"GET",
+            success:function(res){
+                console.log(res);
+                var trace1 = {
+                  x: res.axis,
+                  y: res["twitNumbers"],
+                  type: 'scatter'
+                };
+
+                var data = [trace1];
+                Plotly.newPlot('myDiv', data);
+            }
+        });
+    });
+  </script>
+</body>
