@@ -17,30 +17,33 @@ tweets = twits.find({"twitHashtags": {"$in": ["1-0","goal","gol","goaall","goals
 successfull = 0
 failed = 0
 translator = Translator()
+z = 0
 for tweet in tweets:
-    translatedTokens = []
-    try:
-        twitText = tweet["twitText"]
-        translatedTwitText = translator.translate(tweet["twitText"], dest='en')
+    z += 1
+    if z > 102:
+        translatedTokens = []
+        try:
+            twitText = tweet["twitText"]
+            translatedTwitText = translator.translate(tweet["twitText"], dest='en')
 
-        for twitToken in tweet["twitTokens"]:
-            translated = translator.translate(twitToken, dest='en')
-            translatedTokens.append(translated.text)
+            for twitToken in tweet["twitTokens"]:
+                translated = translator.translate(twitToken, dest='en')
+                translatedTokens.append(translated.text)
 
-        twits.update_one(
-            {"twitId": tweet["twitId"]},
-                {
-                "$set": {
-                    "twitTokens": translatedTokens,
-                    "twitText": translatedTwitText.text
+            twits.update_one(
+                {"twitId": tweet["twitId"]},
+                    {
+                    "$set": {
+                        "twitTokens": translatedTokens,
+                        "twitText": translatedTwitText.text
+                    }
                 }
-            }
-        )
-        successfull += 1
-        print("successFulls : ", successfull)
-    except:
-        failed += 1
-        print("faileds : ", failed)
+            )
+            successfull += 1
+            print("successFulls : ", successfull)
+        except:
+            failed += 1
+            print("faileds : ", failed)
 
 print("Finished \n")
 print("successFulls : ", successfull)
