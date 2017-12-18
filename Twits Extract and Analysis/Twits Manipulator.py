@@ -1,18 +1,30 @@
+from googletrans import Translator
+from nltk.corpus import stopwords
+from nltk.sentiment import SentimentIntensityAnalyzer
+from nltk.tokenize import word_tokenize
+import re
 from pymongo import MongoClient
+import remove_emoji
 import datetime
 from nltk.stem.wordnet import WordNetLemmatizer
-from googletrans import Translator
+
+
 lmtzr = WordNetLemmatizer()
+
 epoch = datetime.datetime.utcfromtimestamp(0)
 
 client = MongoClient('mongodb://localhost:27017')
 db = client.twitsDb
 twits = db.twits
+translatedTweets = db.translatedTweets
 events = db.events
 
-tweets = twits.find({"twitHashtags": {"$in": ["1-0","goal","gol","goaall","goals","gool","captain","referre","penalty","foul","portugal", "cr7", "cristianoronaldo", "ronaldo", "pepe", "por", "france", "fra",
-            "euro2016", "final", "amp", "supporting", "euro" , "support"]},
-            "twitmiliSeconds": {"$gt": 1468108920000, "$lt": 1468117860000}}, {"twitTokens": 1, "twitmiliSeconds": 1, "positiveFeelings" : 1, "NegativeFeelings": 1, "twitId" : 1,"twitText": 1,"tokensFeeling":1})
+tweets = twits.find({"twitHashtags": {
+    "$in": ["1-0", "portugal", "cr7", "cristianoronaldo", "ronaldo", "pepe", "por", "france", "fra", "euro2016",
+            "final", "porfra", "frapor"]},
+                     "twitmiliSeconds": {"$gt": 1468168200000, "$lt": 1468704600000}},
+                    {"twitTokens": 1, "twitmiliSeconds": 1, "twitId": 1,
+                     "twitText": 1, "twitDate": 1,"twitHashtags":1})
 
 successfull = 0
 failed = 0
@@ -20,33 +32,60 @@ translator = Translator()
 z = 0
 for tweet in tweets:
     z += 1
-    if z > 102:
-        translatedTokens = []
-        try:
-            twitText = tweet["twitText"]
-            translatedTwitText = translator.translate(tweet["twitText"], dest='en')
+    translatedTokens = []
+    stop_words = set(stopwords.words('english'))
+    try:
+        ids = tweet["twitId"]
+        translatedTwitText = translator.translate(tweet["twitText"], dest='en')
+        translated = translatedTwitText.text
+        removedEmojiesText = remove_emoji.remove_emoji(translated)
+        word_tokens = word_tokenize(removedEmojiesText)
+        lemetizedList = []
+        sid = SentimentIntensityAnalyzer()
+        removedUser = re.sub(r'@.*$', "", translated)
+        ss = sid.polarity_scores(removedUser)
+        posFeeling = ss["pos"]
+        negFeeling = ss["neg"]
+        compoundFeeling = ss["compound"]
+        neuFeeling = ss["neu"]
+        i = 0
+        for x in word_tokens:
+            if not lemetizedList.__contains__(x):
+                lemetizedList.append(lmtzr.lemmatize(x))
+            i = i + 1
+        filtered_sentence = []
+        for w in lemetizedList:
+            if w not in stop_words:
+                if len(w) > 2 and not w.startswith('/'):
+                    removedUrlText = re.sub(r'http.*$', "", w)
+                    if removedUrlText != '':
+                        if not filtered_sentence.__contains__(removedUrlText):
+                            filtered_sentence.append(removedUrlText)
+        data = {
+                'tweetId': ids,
+                'tweetText': translated,
+                'tweetTokens': filtered_sentence,
+                'tweetMiliSeconds': tweet["twitmiliSeconds"],
+                'tweetDate': tweet["twitDate"],
+                'tweetHashtags': tweet["twitHashtags"],
+                'posFeeling': posFeeling,
+                'negFeeling': negFeeling,
+                'compoundFeeling': compoundFeeling,
+                'neuFeeling': neuFeeling
+        }
 
-            for twitToken in tweet["twitTokens"]:
-                translated = translator.translate(twitToken, dest='en')
-                translatedTokens.append(translated.text)
+        translatedTweets.insert_one(data)
+        successfull += 1
 
-            twits.update_one(
-                {"twitId": tweet["twitId"]},
-                    {
-                    "$set": {
-                        "twitTokens": translatedTokens,
-                        "twitText": translatedTwitText.text
-                    }
-                }
-            )
-            successfull += 1
-            print("successFulls : ", successfull)
-        except:
-            failed += 1
-            print("faileds : ", failed)
+    except:
+        failed += 1
+        print("fails : ", failed)
+        print("successfuls : ", successfull)
 
-print("Finished \n")
-print("successFulls : ", successfull)
-print("faileds : " , failed)
 
-# Predict
+print("Finished")
+print("successes : ", successfull)
+print("fails : ", failed)
+
+
+

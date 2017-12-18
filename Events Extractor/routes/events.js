@@ -28,12 +28,14 @@ router.post("/sendEvents",cors(), function (req, res) {
         var matchDate  = req.body["matchTime"];
         var matchTime = req.body["matchTime"].split(" - ")[0].toString();
         var matchId = req.body["matchId"];
-        // console.log(matchTime);
-        // var dateStrings = matchTime.split("/");
-        // var newTime = dateStrings[2] + "-"+ dateStrings[1] + "-"+dateStrings[0];
-        // var date = Date.parse(newTime+"T01:02+01:00"));
-        // console.log(date);
-        var eventmiliSecondsTime = Date.parse("2016-07-10T01:02+01:00");
+
+        var date = new Date ( Date.parse("2016-07-10T16:30+00:00"));  // 21:00 16 jul - france vs por
+        var options = {
+            weekday: "long", year: "numeric", month: "short",
+            day: "numeric", hour: "2-digit", minute: "2-digit"
+        };
+        date.toLocaleTimeString("en-us", options);
+        var eventmiliSecondsTime = date.getTime();
         console.log(eventmiliSecondsTime);
         for (var x = 0 ; x < eventsList.length ; x++) {
             var event = {};
