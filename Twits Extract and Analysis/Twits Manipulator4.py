@@ -22,7 +22,7 @@ events = db.events
 tweets = twits.find({"twitHashtags": {
     "$in": ["1-0", "portugal", "cr7", "cristianoronaldo", "ronaldo", "pepe", "por", "france", "fra", "euro2016",
             "final", "porfra", "frapor"]},
-                     "twitmiliSeconds": {"$gt": 1468168200000, "$lt": 1468302300000}},
+                     "twitmiliSeconds": {"$gt": 1469375160000, "$lt": 1468704600000}},
                     {"twitTokens": 1, "twitmiliSeconds": 1, "twitId": 1,
                      "twitText": 1, "twitDate": 1,"twitHashtags":1,"$maxScan":1000000000000,"$max":1000000000000})
 successfull = 0
@@ -73,7 +73,7 @@ for tweet in tweets:
                 'neuFeeling': neuFeeling
         }
 
-        translatedTweets.insert_one(data, "twitId = :", ids)
+        translatedTweets.insert_one(data,"twitId = :",ids)
         successfull += 1
 
     except:
