@@ -5,7 +5,7 @@ import TwitsManipulator
 left = 1468168240000
 right = 1468178200000
 threads = []
-step = (right - left) / 16
+step = (right - left) / 48
 
 
 class Main():
@@ -16,7 +16,7 @@ class Main():
 
 if __name__ == '__main__':
     obj = Main()
-    for x in range(0, 16):
+    for x in range(0, 48):
         right = left + step
         print(x,") -- left: ", left, " - right: ", right)
         thread_temp = Thread(target=obj.twitsManipulator)
