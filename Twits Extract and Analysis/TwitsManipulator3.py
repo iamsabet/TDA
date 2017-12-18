@@ -23,9 +23,9 @@ events = db.events
 tweets = twits.find({"twitHashtags": {
     "$in": ["1-0", "portugal", "cr7", "cristianoronaldo", "ronaldo", "pepe", "por", "france", "fra", "euro2016",
             "final", "porfra", "frapor"]},
-                     "twitmiliSeconds": {"$gt": 1468168200000, "$lt": 1468704600000}},
+                     "twitmiliSeconds": {"$gt": 1468173200000, "$lt": 1468175700000}},
                     {"twitTokens": 1, "twitmiliSeconds": 1, "twitId": 1,
-                     "twitText": 1, "twitDate": 1,"twitHashtags":1,"$maxScan":10000000000,"$max":10000000000})
+                     "twitText": 1, "twitDate": 1, "twitHashtags": 1,"$maxScan": 1000000000,"$max": 1000000000})
 successfull = 0
 failed = 0
 translator = Translator()
@@ -73,9 +73,7 @@ for tweet in tweets:
                 'compoundFeeling': compoundFeeling,
                 'neuFeeling': neuFeeling
         }
-
         translatedTweets.insert_one(data)
-        translatedTweets.close()
         successfull += 1
 
     except:
