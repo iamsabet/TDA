@@ -3,7 +3,7 @@ from threading import Thread
 import TwitsManipulator
 
 left = 1468168240000
-right = 1468178200000
+right = 1468177200000
 threads = []
 step = (right - left) / 48
 
