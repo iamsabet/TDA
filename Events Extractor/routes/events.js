@@ -17,8 +17,42 @@ router.all('/', function(req, res, next) {
     next();
 });
 router.use(cors({origin: 'http://www.uefa.com'}));
-router.get("/",cors(), function (req, res) {
-        res.send('hellow');
+router.post("/",cors(), function (req, res) {
+    console.log("asb");
+    MongoClient.connect(url, function (err, db) {
+        if(err) throw err;
+        console.log("asb2");
+        var positiveFeelings = [];
+        var negativeFeelings = [];
+        for (var x = 0 ; x < 74 ; x++){
+            positiveFeelings.push(0);
+            negativeFeelings.push(0);
+        }
+        db.collection("translatedTweets").find({},
+            function (err,list) {
+            if(err) throw err;
+            var index = 0 ;
+            console.log(list);
+            if(list.length > 0){
+                var step = (1468177200000 - 1468168240000);
+                for(var x in list){
+                    console.log(x);
+                    index = (list[x]["tweetMiliSeconds"] - 1468168240000) % step;
+                    positiveFeelings[index] += (list[x]["posFeeling"]);
+                    negativeFeelings[index] += (list[x]["neuFeeling"]);
+                    console.log("kir");
+                    if(x === list.length - 1){
+                        db.collection("events").find({},
+                            function (err,list) {
+                            if(err) throw err;
+                            console.log("kir");
+                            res.send({negatives: negativeFeelings, positives: positiveFeelings,events:list})
+                            });
+                    }
+                }
+            }
+        });
+    });
 });
 router.post("/sendEvents",cors(), function (req, res) {
 
@@ -28,8 +62,7 @@ router.post("/sendEvents",cors(), function (req, res) {
         var matchDate  = req.body["matchTime"];
         var matchTime = req.body["matchTime"].split(" - ")[0].toString();
         var matchId = req.body["matchId"];
-
-        var date = new Date ( Date.parse("2016-07-10T16:30+00:00"));  // 21:00 16 jul - france vs por
+        var date = new Date ( Date.parse("2016-07-10T16:30+00:00") );  // 21:00 16 jul - france vs por
         var options = {
             weekday: "long", year: "numeric", month: "short",
             day: "numeric", hour: "2-digit", minute: "2-digit"
@@ -112,6 +145,7 @@ router.get("/plot",cors(), function (req, res) {
     MongoClient.connect(url, function (err, db) {
         if(err) throw err;
         console.log("asb2");
+        console.log(db);
         db.collection("twits").find({
             "twitmiliSeconds": {
                 "$gt": 1468108920000,
@@ -119,6 +153,7 @@ router.get("/plot",cors(), function (req, res) {
             }
         }, function (err,list) {
             var tweets = list;
+            console.log(list);
             var lastStep = 1468108920000;
             var minutes = 0;
             var lastMode = 0;

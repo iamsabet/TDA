@@ -65,3 +65,19 @@ function sendEvents(eventsList,matchId,matchTime,matchTeams){
 
 
 eventsExtractor(2);
+
+
+
+function getPlot(){
+    var xhr = new XMLHttpRequest();
+    var url = "http://localhost:3000/events/";
+    xhr.open("POST", url, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            console.log(xhr.response);
+            debugger;
+        }
+    };
+    xhr.send();
+}
+getPlot();

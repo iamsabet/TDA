@@ -23,7 +23,7 @@ for line in f:
 
         parts = email.utils.parsedate_tz(line_in[0])
         dt = datetime.datetime(*parts[:6]) - datetime.timedelta(seconds=parts[-1])
-        print(dt,parts);
+        print(dt, parts)
         z = z + 1
         twitText = line_in[1].lower()
         removedEmojiesText = remove_emoji.remove_emoji(twitText)

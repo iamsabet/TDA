@@ -7,6 +7,7 @@ import datetime
 import xml.etree.ElementTree as ET
 from bs4 import BeautifulSoup
 from nltk.corpus import stopwords
+
 stop = stopwords.words('english')
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 
@@ -14,6 +15,7 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 # More can be found here
 # http://www.winwaed.com/blog/2011/11/08/part-of-speech-tags/
 NOUNS = ['NN', 'NNS', 'NNP', 'NNPS']
+
 
 def clean_document(document):
     """Cleans document by removing unnecessary punctuation. It also removes
@@ -35,10 +37,12 @@ def clean_document(document):
     document = ' '.join(document.split())
     return document
 
+
 def remove_stop_words(document):
     """Returns document without stop words"""
     document = ' '.join([i for i in document.split() if i not in stop])
     return document
+
 
 def similarity_score(t, s):
     """Returns a similarity score for a given sentence.
@@ -49,7 +53,7 @@ def similarity_score(t, s):
     s = remove_stop_words(s.lower())
     t_tokens, s_tokens = t.split(), s.split()
     similar = [w for w in s_tokens if w in t_tokens]
-    score = (len(similar) * 0.1 ) / len(t_tokens)
+    score = (len(similar) * 0.1) / len(t_tokens)
     return score
 
 
@@ -58,11 +62,11 @@ def merge_acronyms(s):
     r = re.compile(r'(?:(?<=\.|\s)[A-Z]\.)+')
     acronyms = r.findall(s)
     for a in acronyms:
-        s = s.replace(a, a.replace('.',''))
+        s = s.replace(a, a.replace('.', ''))
     return s
 
 
-def rank_sentences(doc, doc_matrix, feature_names,top_n=3):
+def rank_sentences(doc, doc_matrix, feature_names, top_n=3):
     """Returns top_n sentences. Theses sentences are then used as summary
     of document.
     input
@@ -76,21 +80,22 @@ def rank_sentences(doc, doc_matrix, feature_names,top_n=3):
     sents = nltk.sent_tokenize(doc)
     sentences = [nltk.word_tokenize(sent) for sent in sents]
     sentences = [[w for w in sent if nltk.pos_tag([w])[0][1] in NOUNS]
-                  for sent in sentences]
+                 for sent in sentences]
     tfidf_sent = [[doc_matrix[feature_names.index(w.lower())]
                    for w in sent if w.lower() in feature_names]
-                 for sent in sentences]
+                  for sent in sentences]
 
     # Calculate Sentence Values
     doc_val = sum(doc_matrix)
     sent_values = [sum(sent) / doc_val for sent in tfidf_sent]
 
     # Apply Similariy Score Weightings
+    # Apply Similariy Score Weightings
     similarity_scores = [similarity_score(title, sent) for sent in sents]
     scored_sents = np.array(sent_values) + np.array(similarity_scores)
 
     # Apply Position Weights
-    ranked_sents = [sent*(i/len(sent_values))
+    ranked_sents = [sent * (i / len(sent_values))
                     for i, sent in enumerate(sent_values)]
     print(ranked_sents)
     ranked_sents = [pair for pair in zip(range(len(sent_values)), sent_values)]
@@ -136,4 +141,3 @@ if __name__ == '__main__':
                         for i in [pair[0] for pair in top_sents]])
     summary = ' '.join(summary.split())
     print(summary)
-

@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var events = require('./routes/events');
-
+var twits = require('./routes/twits');
 var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/events', events);
-
+app.use('/twits', twits);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

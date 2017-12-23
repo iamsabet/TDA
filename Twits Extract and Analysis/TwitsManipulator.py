@@ -23,13 +23,7 @@ events = db.events
 
 def twitsManipulator(left, right):
     right = right - 1
-    tweets = twits.find({"twitHashtags": {
-        "$in": ["1-0", "portugal", "cr7", "cristianoronaldo", "ronaldo", "pepe", "por", "france", "fra", "euro2016",
-                "final", "porfra", "frapor"]},
-        "twitmiliSeconds": {"$gt": left, "$lt": right}
-    },
-        {"twitTokens": 1, "twitmiliSeconds": 1, "twitId": 1,
-         "twitText": 1, "twitDate": 1, "twitHashtags": 1, "$maxScan": 100000000, "$max": 100000000})
+    tweets = twits.find({"twitmiliSeconds": {"$gt": left,"$lt": right}}, {"twitDate":1,"twitmiliSeconds": 1,"twitHashtags":1,"twitText":1,"twitId":1})
     successfull = 0
     failed = 0
     translator = Translator()
