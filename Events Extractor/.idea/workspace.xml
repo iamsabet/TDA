@@ -44,21 +44,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="events.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/events.js">
+      <file leaf-file-name="plots.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/routes/plots.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2031">
-              <caret line="99" column="39" lean-forward="false" selection-start-line="98" selection-start-column="16" selection-end-line="99" selection-end-column="39" />
+            <state relative-caret-position="555">
+              <caret line="15" column="75" lean-forward="false" selection-start-line="15" selection-start-column="75" selection-end-line="15" selection-end-column="75" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="plots.js" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/routes/plots.js">
+      <file leaf-file-name="events.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/routes/events.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="666">
-              <caret line="18" column="33" lean-forward="true" selection-start-line="18" selection-start-column="33" selection-end-line="18" selection-end-column="33" />
+            <state relative-caret-position="2031">
+              <caret line="99" column="39" lean-forward="false" selection-start-line="98" selection-start-column="16" selection-end-line="99" selection-end-column="39" />
               <folding />
             </state>
           </provider>
@@ -84,11 +84,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="plot.html" pinned="false" current-in-tab="false">
+      <file leaf-file-name="plot.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/client/views/plot.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="518">
-              <caret line="38" column="35" lean-forward="false" selection-start-line="38" selection-start-column="35" selection-end-line="38" selection-end-column="35" />
+            <state relative-caret-position="310">
+              <caret line="77" column="84" lean-forward="false" selection-start-line="77" selection-start-column="84" selection-end-line="77" selection-end-column="84" />
               <folding />
             </state>
           </provider>
@@ -104,11 +104,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="clientScripts.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="clientScripts.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/clientScripts.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="338">
-              <caret line="26" column="48" lean-forward="true" selection-start-line="26" selection-start-column="48" selection-end-line="26" selection-end-column="48" />
+            <state relative-caret-position="153">
+              <caret line="30" column="17" lean-forward="true" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -131,6 +131,8 @@
       <find>insert</find>
       <find>relativeTime</find>
       <find>eventsY[events[y].relativeTime]</find>
+      <find>eventsKeys</find>
+      <find>eventKe</find>
     </findStrings>
   </component>
   <component name="GradleLocalSettings">
@@ -150,8 +152,8 @@
         <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/client/styles.css" />
         <option value="$PROJECT_DIR$/client/stylesheets/style.css" />
-        <option value="$PROJECT_DIR$/client/views/plot.html" />
         <option value="$PROJECT_DIR$/routes/plots.js" />
+        <option value="$PROJECT_DIR$/client/views/plot.html" />
       </list>
     </option>
   </component>
@@ -302,12 +304,12 @@
       <workItem from="1514110264450" duration="36000" />
       <workItem from="1514218835971" duration="621000" />
       <workItem from="1514219635363" duration="1000" />
-      <workItem from="1514219770823" duration="9679000" />
+      <workItem from="1514219770823" duration="12017000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="47253000" />
+    <option name="totallyTimeSpent" value="49591000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="16" width="3202" height="1785" extended-state="6" />
@@ -694,14 +696,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="888">
-          <caret line="24" column="56" lean-forward="false" selection-start-line="24" selection-start-column="56" selection-end-line="24" selection-end-column="56" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/index.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="333">
@@ -726,18 +720,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/client/views/plot.html">
+    <entry file="file://$PROJECT_DIR$/clientScripts.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="518">
-          <caret line="38" column="35" lean-forward="false" selection-start-line="38" selection-start-column="35" selection-end-line="38" selection-end-column="35" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/routes/plots.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="666">
-          <caret line="18" column="33" lean-forward="true" selection-start-line="18" selection-start-column="33" selection-end-line="18" selection-end-column="33" />
+        <state relative-caret-position="153">
+          <caret line="30" column="17" lean-forward="true" selection-start-line="30" selection-start-column="17" selection-end-line="30" selection-end-column="17" />
           <folding />
         </state>
       </provider>
@@ -750,10 +736,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/clientScripts.js">
+    <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="338">
-          <caret line="26" column="48" lean-forward="true" selection-start-line="26" selection-start-column="48" selection-end-line="26" selection-end-column="48" />
+        <state relative-caret-position="888">
+          <caret line="24" column="56" lean-forward="false" selection-start-line="24" selection-start-column="56" selection-end-line="24" selection-end-column="56" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/routes/plots.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="555">
+          <caret line="15" column="75" lean-forward="false" selection-start-line="15" selection-start-column="75" selection-end-line="15" selection-end-column="75" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/client/views/plot.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="310">
+          <caret line="77" column="84" lean-forward="false" selection-start-line="77" selection-start-column="84" selection-end-line="77" selection-end-column="84" />
           <folding />
         </state>
       </provider>

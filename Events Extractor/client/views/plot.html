@@ -36,11 +36,10 @@
             $.ajax({
                 url:"http://localhost:3000/plots/",
                 method:"POST",
-                data:{"matchId":1},
-                dataType:"application/json",
+                data:{"matchId":3},
+                dataType:"json",
                 success:function(res){
-                    console.log(JSON.parse(res));
-                    debugger;
+
                     doAnalysis(res);
                 }
             });
@@ -48,17 +47,16 @@
 
         function doAnalysis(data){
             console.log(data);
-            minutes = data["poses"].length;
+            minutes = data["classedTweets"].length;
             posesY = data["poses"];
             negsY = data["negs"];
             minutesArray = [];
             classedTweets = data["classedTweets"];
             events = data["events"];
+            console.log("minutes" + minutes);
             for(var m = 0 ; m < minutes ; m ++){
-                eventsKeys.push([]);
                 eventsY.push({"keyNames":[],"amount":0});
                 if(m === minutes -1 ){
-                    console.log(eventsY);
                     for (var x = 0 ; x < classedTweets.length ; x ++) {
                         tweetsAmount.push(classedTweets[x].length);
                         minutesArray.push(x+1);
@@ -66,7 +64,7 @@
                         if(x === classedTweets.length -1){
                             console.log(eventsY.length);
                             for (var y = 0 ; y < events.length ; y ++) {
-                                eventsKeys[y].push(events[y]["eventKey"]);
+
                                 if(events[y].relativeTime !== null)
                                 {
                                     console.log(y+" --- "+events[y].relativeTime);
@@ -77,8 +75,8 @@
                                 if(y === events.length -1){
                                     for (var z = 0 ; z < eventsY.length; z++) {
                                         if (eventsY[z].amount > 0) {
-                                            eventsYFinaly.push(eventsY[z].amount * 300);
-                                            console.log(z, " ---) " + eventsY[z].amount + " events  --- > " + eventsKeys[z].keyNames);
+                                            eventsYFinaly.push(eventsY[z].amount * 200);
+                                            console.log(z, " ---) " + eventsY[z].amount + " events  --- > " + eventsY[z].keyNames);
                                             eventsX.push(z);
                                         }
                                         if(z === eventsY.length -1){

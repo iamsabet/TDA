@@ -11,8 +11,9 @@ router.get("/",cors(), function (req, res) {
 });
 router.post("/",cors(), function (req, res) {
     MongoClient.connect(url, function (err, db) {
-        console.log("connected to db ");
-        db.collection("plots").findOne({"matchId":1},{"matchTeams": 1, "negs": 1, "poses": 1, "classedTweets": 1, "events": 1},function(err,result){
+        var matchId = req.body["matchId"];
+        console.log(matchId);
+        db.collection("plots").findOne({"matchId":Number.parseInt(matchId)},{"matchId":1,"matchTeams": 1, "negs": 1, "poses": 1, "classedTweets": 1, "events": 1},function(err,result){
             if(err) throw err;
             if(result){
                 console.log(result["matchTeams"]);
