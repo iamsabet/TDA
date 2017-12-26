@@ -12,11 +12,11 @@ import TwitsManipulator
 
 #1467483720000	Germany Italy - ( 1/8 ) 158 mins (1 - 1) penalties (6 - 5) 
 #1467493200000 
-left =  1467483720000
-right = 1467493200000
+left =  1467563400000
+right = 1467570000000
 
 threads = []
-step = (right - left) / 52
+step = (right - left) / 32
 
 
 class Main:
@@ -28,7 +28,7 @@ class Main:
 
 if __name__ == '__main__':
     obj = Main()
-    for x in range(0, 52):
+    for x in range(0, 32):
         right = left + step
         print(x,") -- left: ", left, " - right: ", right)
         thread_temp = Thread(target=obj.twitsManipulator)
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         thread_temp.start()
         left = left + step
 
-    for x in range(0, 52):
+    for x in range(0, 32):
         threads[x].join()
 
     print("Finished")
