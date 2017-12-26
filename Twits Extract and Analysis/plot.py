@@ -1,39 +1,32 @@
-from flask import json, jsonify
 from pymongo import MongoClient
 import datetime
-from flask_cors import CORS
-from flask import Flask
 from nltk.stem.wordnet import WordNetLemmatizer
 lmtzr = WordNetLemmatizer()
 epoch = datetime.datetime.utcfromtimestamp(0)
-#1468168200000 France - Portugal ( Final ) - 154 mins (1)
-#1468177440000
-
-#1467909000000	France - Germany (Semi Final) 111mins (2)
-#1467915720000
-
-#1467563400000	France - Iceland (Quarter Final) 108mins (3)
-#1467570000000
-
-#1467483720000	Germany Italy - ( 1/8 ) 158 mins (1 - 1) penalties (6 - 5) 
-#1467493200000 
-app = Flask(__name__)
-CORS(app)
 
 client = MongoClient('mongodb://localhost:27017')
 db = client.twitsDb
 translatedTweets = db.translatedTweets
 plots = db.plots
 events = db.events
-left = 1467909000000
-right = 1467915720000
-
-
-@app.route('/plot/')
-def main():
+left = 0
+right = 0
+for matchId in range(1, 5):
+    if matchId == 1:  # France - Portugal ( Final ) - 154 mins (1)
+        left = 1468168200000
+        right = 1468177440000
+    if matchId == 2:  # France - Germany (Semi Final) 111mins (2)
+        left = 1467909000000
+        right = 1467915720000
+    if matchId == 3:
+        left = 1467563400000  # France - Iceland (Quarter Final) 108mins (3)
+        right = 1467570000000
+    if matchId == 4:  # Germany Italy - ( 1/8 ) 158 mins (1 - 1) penalties (6 - 5)
+        left = 1467483720000
+        right = 1467493200000
     tweets = translatedTweets.find({"tweetMiliSeconds": {"$gt": left, "$lt": right}})
     print(tweets)
-    eventsList = events.find({"matchId": 2})
+    eventsList = events.find({"matchId": 1})
     classedTweets = []
     posSums = []
     negSums = []
@@ -65,12 +58,8 @@ def main():
     except:
         print("((())) --->  ", m, "  --- failed !!!!")
     finally:
-        plots.insert_one({"matchId": 2, "matchTeams": "France Portugal", "neus": neusSums, "poses": posSums, "negs": negSums, "comps": compsSums, "classedTweets": classedTweets, "events": eventsLists})
-        return "true"
+        plots.insert_one({"matchId": matchId, "matchTeams": "France Portugal", "neus": neusSums, "poses": posSums, "negs": negSums, "comps": compsSums, "classedTweets": classedTweets, "events": eventsLists})
 
-
-if __name__ == '__main__':
-    app.run()
 
 
 
