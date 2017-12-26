@@ -8,34 +8,50 @@ function eventsExtractor(matchId){
     var matchTeams  = document.querySelector('#teamHomeName').innerHTML.split(">")[1].split(" <")[0] + "-" + document.querySelector("#teamAwayName").innerHTML.split(">")[1].split(" <")[0];
     elements = document.querySelectorAll('#commentary li');
 	var num ;
-
-	for(num = 1 ; num < elements.length ; num++){
+    var penalties = false;
+    var lastEventTime = 0;
+    var p = 0;
+	for(num = elements.length-1  ; num > -1 ; num--){
 
         var eventTime = elements[num].innerHTML.split('time">')[1].split(' </div')[0];
-
-            if (eventTime.split("+").length > 1) {
-                eventTime = parseInt(eventTime.split("+")[0]) + parseInt(eventTime.split("+")[1]);
-
-                if (eventTime > 90 && eventTime <= 105) {
-                    eventTime = parseInt(eventTime) + 15 + 1;
+            console.log(eventTime);
+            if(eventTime === ""){
+                if(penalties){
+                    if(p % 2 === 0) {
+                        lastEventTime++;
+                    }
+                    p++;
+                    eventTime = lastEventTime;
                 }
-                else if (eventTime > 105) {
-                    eventTime = parseInt(eventTime) + 15 + 1 + 10;
-                }
-            }//
+            }
             else {
-            	eventTime = parseInt(eventTime);
-                if (parseInt(eventTime) > 45 && parseInt(eventTime) <= 90) {
-                    eventTime = parseInt(eventTime) + 15 + 1;
+                if (eventTime.split("+").length > 1) {
+                    eventTime = parseInt(eventTime.split("+")[0]) + parseInt(eventTime.split("+")[1]);
+
+                    if (eventTime > 90 && eventTime <= 105) {
+                        eventTime = parseInt(eventTime) + 15 + 1;
+                    }
+                    else if (eventTime > 105) {
+                        eventTime = parseInt(eventTime) + 15 + 1 + 10;
+                    }
+                    lastEventTime = eventTime;
+                }//
+                else {
+                    eventTime = parseInt(eventTime);
+                    if (parseInt(eventTime) > 45 && parseInt(eventTime) <= 90) {
+                        eventTime = parseInt(eventTime) + 15 + 1;
+
+                    }
+                    else if (parseInt(eventTime) > 90 && parseInt(eventTime) <= 105) {
+                        eventTime = parseInt(eventTime) + 15 + 1 + 5;
+                    }
+                    else if (parseInt(eventTime) > 105) {
+                        eventTime = parseInt(eventTime) + 15 + 1 + 10;
+                        penalties = true;
+                    }
+                    lastEventTime = eventTime;
 
                 }
-                else if (parseInt(eventTime) > 90 && parseInt(eventTime) <= 105) {
-                    eventTime = parseInt(eventTime) + 15 + 1 + 5;
-                }
-                else if (parseInt(eventTime) > 105) {
-                    eventTime = parseInt(eventTime) + 15 + 1 + 10;
-                }
-
             }
         eachEvent = { relativeTime : eventTime,
             eventComment : elements[num].innerHTML.split('comment">')[1].split('<br>')[0]};
@@ -64,7 +80,7 @@ function sendEvents(eventsList,matchId,matchTime,matchTeams){
 }
 
 
-eventsExtractor(2);
+eventsExtractor(3);
 
 
 

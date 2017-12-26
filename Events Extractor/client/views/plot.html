@@ -14,6 +14,8 @@
         </header>
         <div id="plot1"><!-- Plotly chart will be drawn inside this DIV --></div>
         <div id="plot2"><!-- Plotly chart will be drawn inside this DIV --></div>
+        <div id="plot3"><!-- Plotly chart will be drawn inside this DIV --></div>
+        <div id="plot4"><!-- Plotly chart will be drawn inside this DIV --></div>
     </body>
     <script>
         var tweetsAmount = [];
@@ -22,6 +24,8 @@
         var eventsKeys = [];
         var eventsYFinaly = [];
         var posesY = [];
+        var compsY = [];
+        var neusY = [];
         var minutes = [];
         var negsY = [];
         var minutesArray = [];
@@ -33,23 +37,25 @@
         });
 
         function getPlot() {
+            var matchId = 1;
             $.ajax({
                 url:"http://localhost:3000/plots/",
                 method:"POST",
-                data:{"matchId":3},
+                data:{"matchId":matchId},
                 dataType:"json",
                 success:function(res){
-
-                    doAnalysis(res);
+                    doAnalysis(res,matchId);
                 }
             });
         }
 
-        function doAnalysis(data){
+        function doAnalysis(data,matchId){
             console.log(data);
             minutes = data["classedTweets"].length;
             posesY = data["poses"];
             negsY = data["negs"];
+            compsY = data["comps"];
+            neusY = data["neus"];
             minutesArray = [];
             classedTweets = data["classedTweets"];
             events = data["events"];
@@ -63,19 +69,19 @@
                         negsY[x] = (-1*negsY[x]);
                         if(x === classedTweets.length -1){
                             console.log(eventsY.length);
-                            for (var y = 0 ; y < events.length ; y ++) {
+                            for (var y = 0 ; y < events.length - 1 ; y ++) {
 
-                                if(events[y].relativeTime !== null)
+                                if(events[y].relativeTime !== null && events[y].relativeTime !== "")
                                 {
                                     console.log(y+" --- "+events[y].relativeTime);
                                     eventsY[events[y].relativeTime].amount +=1 ; // each 100 is 1 event
                                     eventsY[events[y].relativeTime].keyNames.push(events[y]["eventKey"]);
                                     console.log(eventsY[events[y].relativeTime].keyNames);
                                 }
-                                if(y === events.length -1){
+                                if(y === events.length -2 ){
                                     for (var z = 0 ; z < eventsY.length; z++) {
                                         if (eventsY[z].amount > 0) {
-                                            eventsYFinaly.push(eventsY[z].amount * 200);
+                                            eventsYFinaly.push(eventsY[z].amount * 300);
                                             console.log(z, " ---) " + eventsY[z].amount + " events  --- > " + eventsY[z].keyNames);
                                             eventsX.push(z);
                                         }
@@ -95,6 +101,8 @@
         function drawPlot(){
             var element1 = document.getElementById('plot1');
             var element2 = document.getElementById('plot2');
+            var element3 = document.getElementById('plot3');
+            var element4 = document.getElementById('plot4');
             Plotly.plot(element1, [{
                     x: minutesArray,
                     y: tweetsAmount,
@@ -133,6 +141,27 @@
                 }],
                 {
                     line: {color: 'blue'},
+                    margin: {t: 0}
+                });
+            Plotly.plot(element3, [{
+                    x: minutesArray,
+                    y: neusY,
+
+                    type: "bar"
+                }],
+                {
+                    line: {color: 'blue'},
+                    margin: {t: 0}
+                });
+
+            Plotly.plot(element4, [{
+                    x: minutesArray,
+                    y: compsY,
+
+                    type: "bar"
+                }],
+                {
+                    line: {color: 'green'},
                     margin: {t: 0}
                 });
 

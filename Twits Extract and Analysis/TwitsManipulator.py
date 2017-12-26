@@ -19,11 +19,12 @@ db = client.twitsDb
 twits = db.twits
 translatedTweets = db.translatedTweets
 events = db.events
+hashtags4 = ["germany", "euro2016", "euro", "gerita","itager","itagerman","italy", "itavsger", "gervsita", "italyvsgermany","italyvsgerman","captain","soon","goal","score","scores","penalty","penalties","shoot","miss","misses","german","germanyvsitaly","1-1","shot","germanitaly","save","greate","luck"]
 
 
 def twitsManipulator(left, right):
-    right = right - 1
-    tweets = twits.find({"twitmiliSeconds": {"$gt": left,"$lt": right}}, {"twitDate":1,"twitmiliSeconds": 1,"twitHashtags":1,"twitText":1,"twitId":1})
+    tweets = twits.find({"twitmiliSeconds": {"$gt": left, "$lt": right}},
+    {"twitDate": 1,"twitmiliSeconds": 1, "twitHashtags": 1, "twitText": 1, "twitId": 1})
     successfull = 0
     failed = 0
     translator = Translator()
