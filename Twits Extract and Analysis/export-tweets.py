@@ -27,7 +27,7 @@ events = db.events
 tweets = translatedTweets.find(
     {"tweetMiliSeconds": {"$gt": 1467563400000,"$lt": 1467570000000}
                                 },
-        {"tweetTokens": 1, "tweetMiliSeconds": 1, "tweetId": 1, "tweetText": 1, "tweetDate": 1, "tweetHashtags": 1,"posFeeling": 1,"negFeeling": 1,"tweetDate":1,"neuFeeling": 1,"compoundFeeling":1, "$maxScan": 100000000, "$max": 100000000})
+        {"tweetTokens": 1, "tweetMiliSeconds": 1, "tweetId": 1, "tweetText": 1, "tweetHashtags": 1,"posFeeling": 1,"negFeeling": 1,"tweetDate":1,"neuFeeling": 1,"compoundFeeling":1, "$maxScan": 100000000, "$max": 100000000})
 print("start")
 z = 0
 x = 0

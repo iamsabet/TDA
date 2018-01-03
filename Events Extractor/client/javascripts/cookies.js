@@ -1,4 +1,4 @@
-/**
+x/**
  * Created by Mohammadreza on 10/8/2017.
  */
 function createCookie(name, value, days) {

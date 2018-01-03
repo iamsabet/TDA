@@ -12,10 +12,11 @@
         <header>
             <h2>Plots</h2>
         </header>
-        <div id="plot1"><!-- Plotly chart will be drawn inside this DIV --></div>
-        <div id="plot2"><!-- Plotly chart will be drawn inside this DIV --></div>
-        <div id="plot3"><!-- Plotly chart will be drawn inside this DIV --></div>
-        <div id="plot4"><!-- Plotly chart will be drawn inside this DIV --></div>
+        <div id="plot1" class="plot"><!-- Plotly chart will be drawn inside this DIV --></div>
+        <div id="plot2" class="plot"><!-- Plotly chart will be drawn inside this DIV --></div>
+
+        <div id="plot3" class="plot"><!-- Plotly chart will be drawn inside this DIV --></div>
+        <div id="plot4" class="plot"><!-- Plotly chart will be drawn inside this DIV --></div>
     </body>
     <script>
         var tweetsAmount = [];
@@ -37,11 +38,12 @@
         });
 
         function getPlot() {
-            var matchId = 4;
+            var matchId = 2;
+            var keyword = "";
             $.ajax({
                 url:"http://localhost:3000/plots/",
                 method:"POST",
-                data:{"matchId":matchId},
+                data:{"matchId":matchId,"keyword":keyword},
                 dataType:"json",
                 success:function(res){
                     doAnalysis(res);
@@ -60,28 +62,32 @@
             classedTweets = data["classedTweets"];
             events = data["events"];
             console.log("minutes" + minutes);
-            for(var m = 0 ; m < minutes ; m ++){
+            for(var m = 1 ; m < minutes ; m ++){
                 eventsY.push({"keyNames":[],"amount":0});
-                if(m === minutes -1 ){
-                    for (var x = 0 ; x < classedTweets.length ; x ++) {
+                if(m === minutes -1){
+                    for (var x = 0 ; x < classedTweets.length ; x++) {
                         tweetsAmount.push(classedTweets[x].length);
-                        minutesArray.push(x+1);
+                        minutesArray.push(x);
                         negsY[x] = (-1*negsY[x]);
                         if(x === classedTweets.length -1){
                             console.log(eventsY.length);
                             for (var y = 0 ; y < events.length ; y ++) {
-
                                 if(events[y].relativeTime !== null && events[y].relativeTime !== "" && events[y].relativeTime !== undefined)
                                 {
-                                    console.log(y+" --- "+events[y].relativeTime);
-                                    eventsY[events[y].relativeTime].amount +=1 ; // each 100 is 1 event
-                                    eventsY[events[y].relativeTime].keyNames.push(events[y]["eventKey"]);
-                                    console.log(eventsY[events[y].relativeTime].keyNames);
+                                    console.log(y+" --- "+events[y].relativeTime-1);
+                                    console.log(eventsY[events[y].relativeTime-1]);
+                                    console.log(events[y].relativeTime -1);
+                                    if(eventsY[events[y].relativeTime -1])
+                                        eventsY[events[y].relativeTime -1].amount += 1 ; // each 100 is 1 event
+                                    if(eventsY[events[y].relativeTime -1]) {
+                                        eventsY[events[y].relativeTime -1].keyNames.push(events[y]["eventKey"]);
+                                        console.log(eventsY[events[y].relativeTime -1].keyNames);
+                                    }
                                 }
                                 if(y === events.length -1){
                                     for (var z = 0 ; z < eventsY.length; z++) {
                                         if (eventsY[z].amount > 0) {
-                                            eventsYFinaly.push(eventsY[z].amount * 300);
+                                            eventsYFinaly.push(eventsY[z].amount * 10);
                                             console.log(z, " ---) " + eventsY[z].amount + " events  --- > " + eventsY[z].keyNames);
                                             eventsX.push(z);
                                         }
@@ -103,6 +109,7 @@
             var element2 = document.getElementById('plot2');
             var element3 = document.getElementById('plot3');
             var element4 = document.getElementById('plot4');
+
             Plotly.plot(element1, [{
                     x: minutesArray,
                     y: tweetsAmount,

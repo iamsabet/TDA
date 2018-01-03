@@ -8,8 +8,9 @@ function eventsExtractor(matchId){
     var matchTeams  = document.querySelector('#teamHomeName').innerHTML.split(">")[1].split(" <")[0] + "-" + document.querySelector("#teamAwayName").innerHTML.split(">")[1].split(" <")[0];
     elements = document.querySelectorAll('#commentary li');
 	var num ;
-    var penalties = false;
+    var penalties = true;
     var lastEventTime = 0;
+    var firstHalfExtra = 2;
     var p = 0;
 	for(num = elements.length-1  ; num > -1 ; num--){
 
@@ -17,7 +18,7 @@ function eventsExtractor(matchId){
             console.log(eventTime);
             if(eventTime === ""){
                 if(penalties){
-                    if(p % 2 === 0) {
+                    if(p % 3 === 0) {
                         lastEventTime++;
                     }
                     p++;
@@ -27,26 +28,25 @@ function eventsExtractor(matchId){
             else {
                 if (eventTime.split("+").length > 1) {
                     eventTime = parseInt(eventTime.split("+")[0]) + parseInt(eventTime.split("+")[1]);
-
                     if (eventTime > 90 && eventTime <= 105) {
-                        eventTime = parseInt(eventTime) + 15 + 1;
+                        eventTime = parseInt(eventTime) + 15 + 5;
                     }
                     else if (eventTime > 105) {
-                        eventTime = parseInt(eventTime) + 15 + 1 + 10;
+                        eventTime = parseInt(eventTime) + 15 + 10;
                     }
                     lastEventTime = eventTime;
                 }//
                 else {
                     eventTime = parseInt(eventTime);
                     if (parseInt(eventTime) > 45 && parseInt(eventTime) <= 90) {
-                        eventTime = parseInt(eventTime) + 15 + 1;
+                        eventTime = parseInt(eventTime) + 15;
 
                     }
                     else if (parseInt(eventTime) > 90 && parseInt(eventTime) <= 105) {
-                        eventTime = parseInt(eventTime) + 15 + 1 + 5;
+                        eventTime = parseInt(eventTime) + 15 + 5;
                     }
                     else if (parseInt(eventTime) > 105) {
-                        eventTime = parseInt(eventTime) + 15 + 1 + 10;
+                        eventTime = parseInt(eventTime) + 15 + 10;
                         penalties = true;
                     }
                     lastEventTime = eventTime;
@@ -80,7 +80,7 @@ function sendEvents(eventsList,matchId,matchTime,matchTeams){
 }
 
 
-eventsExtractor(3);
+eventsExtractor(4);
 
 
 

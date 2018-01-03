@@ -28,16 +28,16 @@ header h2{
   line-height:30px;
   color: white;
 }
-#plot{
+.plot{
   padding: 1px;
   width: 100%;
   left:0;
-  position: absolute;
+  position: relative;
   display: block;
   top:50px;
   float:left;
   clear: left;
-  height:800px;
+  height:500px;
   margin:0;
   background-color: #cccccc;
 }
