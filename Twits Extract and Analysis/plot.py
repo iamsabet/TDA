@@ -26,9 +26,8 @@ for matchId in range(1, 5):
         left = 1467483720000
         right = 1467493200000
     #     Query by words ...
-    keyword = "corner"
-    regex = ".*"+keyword+".*"
-    tweets = translatedTweets.find({"tweetMiliSeconds": {"$gt": left, "$lt": right}, "tweetText": {"$regex": regex}})
+    keyword = ""
+    tweets = translatedTweets.find({"tweetText":{"$regex":".*"+keyword+".*"},"tweetMiliSeconds":{"$gt":left,"$lt":right}})
     eventsList = events.find({"matchId": matchId})
     classedTweets = []
     posSums = []

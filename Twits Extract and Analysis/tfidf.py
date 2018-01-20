@@ -90,7 +90,6 @@ def rank_sentences(doc, doc_matrix, feature_names, top_n=3):
     sent_values = [sum(sent) / doc_val for sent in tfidf_sent]
 
     # Apply Similariy Score Weightings
-    # Apply Similariy Score Weightings
     similarity_scores = [similarity_score(title, sent) for sent in sents]
     scored_sents = np.array(sent_values) + np.array(similarity_scores)
 

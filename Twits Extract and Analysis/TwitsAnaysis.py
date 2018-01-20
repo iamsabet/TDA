@@ -64,7 +64,7 @@ def twitsManipulator(left, right):
                 'tweetId': ids,
                 'tweetText': removedUser,
                 'tweetTokens': filtered_sentence,
-                'tweetMiliSeconds': tweet["twitmiliSeconds"],
+                'tweetMiliSec onds': tweet["twitmiliSeconds"],
                 'tweetDate': tweet["twitDate"],
                 'tweetHashtags': tweet["twitHashtags"],
                 'posFeeling': posFeeling,
