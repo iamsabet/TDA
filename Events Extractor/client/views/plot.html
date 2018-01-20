@@ -14,10 +14,7 @@
         </header>
         <div id="plot1" class="plot"><!-- Plotly chart will be drawn inside this DIV --></div>
         <div id="plot2" class="plot"><!-- Plotly chart will be drawn inside this DIV --></div>
-
-        <div id="plot3" class="plot"><!-- Plotly chart will be drawn inside this DIV --></div>
-        <div id="plot4" class="plot"><!-- Plotly chart will be drawn inside this DIV --></div>
-    </body>
+ </body>
     <script>
         var tweetsAmount = [];
         var eventsY = [];
@@ -38,10 +35,10 @@
         });
 
         function getPlot() {
-            var matchId = 2;
-            var keyword = "goal";
+            var matchId = 4;
+            var keyword = "score";
             $.ajax({
-                url:"http://localhost:3000/plots/",
+                url:"http://192.168.8.103:3000/plots/",
                 method:"POST",
                 data:{"matchId":matchId,"keyword":keyword},
                 dataType:"json",
@@ -87,7 +84,7 @@
                                 if(y === events.length -1){
                                     for (var z = 0 ; z < eventsY.length; z++) {
                                         if (eventsY[z].amount > 0) {
-                                            eventsYFinaly.push(eventsY[z].amount * 10);
+                                            eventsYFinaly.push(eventsY[z].amount *5);
                                             console.log(z, " ---) " + eventsY[z].amount + " events  --- > " + eventsY[z].keyNames);
                                             eventsX.push(z);
                                         }
@@ -150,27 +147,7 @@
                     line: {color: 'blue'},
                     margin: {t: 0}
                 });
-            Plotly.plot(element3, [{
-                    x: minutesArray,
-                    y: neusY,
 
-                    type: "bar"
-                }],
-                {
-                    line: {color: 'blue'},
-                    margin: {t: 0}
-                });
-
-            Plotly.plot(element4, [{
-                    x: minutesArray,
-                    y: compsY,
-
-                    type: "bar"
-                }],
-                {
-                    line: {color: 'green'},
-                    margin: {t: 0}
-                });
 
 
         }
